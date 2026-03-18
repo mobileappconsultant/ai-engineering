@@ -34,6 +34,18 @@ Required for:
 - repository behavior
 - DI wiring
 
+## Bug Fix Rule (MANDATORY)
+
+Every bug fix must:
+
+1. Create a failing test that reproduces the bug
+2. Implement fix
+3. Pass test
+4. Add regression coverage
+
+If step 1 is missing:
+STOP immediately.
+
 ## Regression Tests
 Required when:
 - fixing a bug
