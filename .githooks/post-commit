@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+python3 ai/generate_docs.py >/dev/null 2>&1 || true
+bash scripts/update_ai_state.sh >/dev/null 2>&1 || true

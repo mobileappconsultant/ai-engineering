@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -f ai/runtime/final.md ] || [ -f ai/runtime/builder.md ]; then
+  echo "AI workflow artifacts present."
+else
+  echo "Warning: no AI runtime artifacts found in ai/runtime."
+fi
