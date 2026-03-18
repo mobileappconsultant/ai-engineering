@@ -1,148 +1,204 @@
-You are executing an AI-driven engineering workflow.
+You are executing a state-driven AI engineering workflow.
 
-This system is STATE-DRIVEN and LOOP-CONTROLLED.
+---
 
-## STEP 1 — Load system
+# STEP 1 — LOAD CONTEXT (MANDATORY)
 
 Read:
-- /ai/AI_SYSTEM.md
-- /ai/AGENT_WORKFLOW.md
-- /ai/STATE_MACHINE.md
-- /ai/MASTER_STATE.md
-- /ai/ENGINEERING_STANDARDS.md
-- /ai/TEST_STRATEGY.md
-- /ai/DESIGN_PATTERNS.md
-- /ai/docs/*
-- /ai/runtime/* (if exists)
 
-## STEP 2 — Extract control values
+* /ai/master.md
+* /ai/MASTER_STATE.md
+* /ai/ENGINEERING_STANDARDS.md
+* /ai/TEST_STRATEGY.md
+* /ai/DESIGN_PATTERNS.md
+* /ai/STATE_MACHINE.md
+* /ai/docs/* (if exists)
+* /ai/runtime/* (if exists)
 
-From MASTER_STATE.md:
-- current stage
-- mode (AUTO or STEP)
-- continue flag
-- requires devops
-- requires verification
+---
 
-## STEP 3 — Execute stage
+# STEP 2 — VALIDATE SYSTEM
 
-### STAGE: PLANNING
-Act as Planner agent.
-Write output to `/ai/runtime/planner.md`
-Update MASTER_STATE.md:
-- current stage → ARCHITECTURE
-- last completed → PLANNING
+## Validate master.md
 
-### STAGE: ARCHITECTURE
-Act as Architect agent.
-Use planner output.
-Must include:
-- modules affected
-- design patterns
-- DI plan
-- test strategy
-- whether DevOps is required
-Write to `/ai/runtime/architect.md`
-If backend or infra change detected:
-set Requires DevOps → YES
-Update MASTER_STATE.md:
-- current stage → IMPLEMENTATION
-- last completed → ARCHITECTURE
+Must contain:
 
-### STAGE: IMPLEMENTATION
-Act as Builder agent.
-MANDATORY TDD:
+* Architecture section
+* Design principles
+* Testing rules
+
+## Validate MASTER_STATE.md
+
+Must contain:
+
+* Current Stage
+* Mode
+* Continue flag
+
+If validation fails:
+STOP and repair.
+
+---
+
+# STEP 3 — EXECUTE CURRENT STAGE
+
+---
+
+## STAGE: PLANNING
+
+Act as Product Manager.
+
+Output:
+
+* problem
+* user story
+* acceptance criteria
+* constraints
+* edge cases
+
+Save to:
+`/ai/runtime/planner.md`
+
+Update state → ARCHITECTURE
+
+---
+
+## STAGE: ARCHITECTURE
+
+Act as Architect.
+
+Include:
+
+* modules affected
+* design patterns
+* dependency injection plan
+* test strategy
+* devops requirement
+
+Save to:
+`/ai/runtime/architect.md`
+
+If backend or infra change:
+Requires DevOps → YES
+
+Update state → IMPLEMENTATION
+
+---
+
+## STAGE: IMPLEMENTATION
+
+Act as Builder.
+
+## STRICT TDD
+
 1. Write failing tests
-2. Confirm expected failure
+2. Show failure
 3. Implement minimal code
-4. Refactor safely
-Write to `/ai/runtime/builder.md`
+4. Refactor
 
-## TDD CHECK
-Before proceeding:
-- Are failing tests shown first?
-- Is implementation minimal?
-- Are tests passing after implementation?
-If NOT:
-STOP and explain failure.
+Save to:
+`/ai/runtime/builder.md`
 
-Update MASTER_STATE.md:
-- current stage → VERIFICATION
-- last completed → IMPLEMENTATION
+---
 
-### STAGE: VERIFICATION
-Act as Verifier agent.
-Check:
-- unit tests
-- integration tests
-- regression coverage
-- missing cases
-Write to `/ai/runtime/verifier.md`
-If critical gaps:
+## TDD VALIDATION
+
+If failing tests are NOT shown first:
 STOP.
-Update MASTER_STATE.md:
-- current stage → DEVOPS_REVIEW
-- last completed → VERIFICATION
 
-### STAGE: DEVOPS_REVIEW
-Act as DevOps agent.
+If tests do not pass after implementation:
+STOP.
+
+---
+
+Update state → VERIFICATION
+
+---
+
+## STAGE: VERIFICATION
+
+Act as Tester.
+
 Check:
-- Docker
-- healthchecks
-- restart policies
-- resource risks
-- circuit breakers
-- retries and timeouts
-Write to `/ai/runtime/devops.md`
+
+* unit tests
+* integration tests
+* regression coverage
+
+Save to:
+`/ai/runtime/verifier.md`
+
+If gaps found:
+STOP.
+
+Update state → DEVOPS_REVIEW
+
+---
+
+## STAGE: DEVOPS_REVIEW
+
+Act as DevOps Engineer.
+
+Check:
+
+* Docker stability
+* health checks
+* restart policies
+* resource limits
+* circuit breakers
+* retries/timeouts
+
+Save to:
+`/ai/runtime/devops.md`
+
 If unsafe:
 STOP.
-Update MASTER_STATE.md:
-- current stage → CRITICAL_REVIEW
-- last completed → DEVOPS_REVIEW
 
-### STAGE: CRITICAL_REVIEW
-Act as Critic agent.
+Update state → CRITICAL_REVIEW
+
+---
+
+## STAGE: CRITICAL_REVIEW
+
+Act as Critic.
+
 Challenge:
-- hidden bugs
-- bad assumptions
-- missing tests
-- production risks
-- simpler alternatives
-Write to `/ai/runtime/critic.md`
-Update MASTER_STATE.md:
-- current stage → COMPLETE
-- last completed → CRITICAL_REVIEW
 
-### STAGE: COMPLETE
-Summarise:
-- what was built
-- risks
-- improvements
-Save to `/ai/runtime/final.md`
+* hidden bugs
+* bad assumptions
+* missing tests
+* simpler alternatives
 
-## STEP 4 — LOOP CONTROL
+Save to:
+`/ai/runtime/critic.md`
 
-If mode = AUTO AND continue = YES:
-- Move to next stage automatically
-- Repeat execution
+Update state → COMPLETE
 
-If mode = STEP:
-STOP after current stage
+---
 
-## RULES
-- Do not skip stages
-- Do not merge stages
-- Do not write code outside IMPLEMENTATION
-- Do not proceed if tests fail
-- Always update MASTER_STATE.md
-- Always persist outputs
+## STAGE: COMPLETE
 
-## FAILURE HANDLING
-STOP if:
-- unclear requirements
-- missing architecture
-- failing tests
-- unsafe deployment
-- conflicting instructions
+Summarise outcome.
 
-Explain why and wait.
+Save to:
+`/ai/runtime/final.md`
+
+---
+
+# STEP 4 — LOOP CONTROL
+
+If Mode = AUTO and Continue = YES:
+Proceed to next stage automatically.
+
+If Mode = STEP:
+STOP.
+
+---
+
+# RULES
+
+* Do not skip stages
+* Do not write code outside IMPLEMENTATION
+* Do not proceed if tests fail
+* Always update MASTER_STATE.md
+* Always persist outputs
