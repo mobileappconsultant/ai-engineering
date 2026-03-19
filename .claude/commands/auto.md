@@ -1,52 +1,59 @@
 You are executing a state-driven AI engineering workflow.
 
----
-
-# STEP 1 — LOAD CONTEXT (MANDATORY)
+## STEP 1 — LOAD CONTEXT
 
 Read:
 
 * /ai/master.md
 * /ai/MASTER_STATE.md
+* /ai/AI_SYSTEM.md
 * /ai/ENGINEERING_STANDARDS.md
+* /ai/CHANGE_CONTROL.md
 * /ai/TEST_STRATEGY.md
 * /ai/DESIGN_PATTERNS.md
+* /ai/SECURITY_STANDARDS.md
+* /ai/PROJECT_TYPE.md
 * /ai/STATE_MACHINE.md
-* /ai/docs/* (if exists)
-* /ai/runtime/* (if exists)
+* project-type-specific standards
+* /ai/docs/*
+* /ai/runtime/*
+
+If required context files are missing:
+STOP.
 
 ---
 
-# STEP 2 — VALIDATE SYSTEM
+## STEP 2 — VALIDATE SYSTEM
 
-## Validate master.md
+Validate:
 
-Must contain:
-
-* Architecture section
-* Design principles
-* Testing rules
-
-## Validate MASTER_STATE.md
+### master.md
 
 Must contain:
 
+* architecture
+* design principles
+* testing rules
+
+### MASTER_STATE.md
+
+Must contain:
+
+* Current Task
 * Current Stage
 * Mode
-* Continue flag
+* Continue
 
-If validation fails:
-STOP and repair.
-
----
-
-# STEP 3 — EXECUTE CURRENT STAGE
+If invalid:
+STOP and repair before proceeding.
 
 ---
 
-## STAGE: PLANNING
+## STEP 3 — EXECUTE CURRENT STAGE
 
-Act as Product Manager.
+### STAGE: PLANNING
+
+Act as Planner.
 
 Output:
 
@@ -55,15 +62,19 @@ Output:
 * acceptance criteria
 * constraints
 * edge cases
+* security considerations
 
 Save to:
 `/ai/runtime/planner.md`
 
-Update state → ARCHITECTURE
+Update state:
+
+* Current Stage → ARCHITECTURE
+* Last Completed Stage → PLANNING
 
 ---
 
-## STAGE: ARCHITECTURE
+### STAGE: ARCHITECTURE
 
 Act as Architect.
 
@@ -73,80 +84,104 @@ Include:
 * design patterns
 * dependency injection plan
 * test strategy
-* devops requirement
+* security implications
+* whether DevOps review is required
+* whether circuit breaker is required
+* timeout and retry expectations for external calls
 
 Save to:
 `/ai/runtime/architect.md`
 
-If backend or infra change:
+If backend, infra, Docker, queue, external API, auth, file upload, or deployment change detected:
 Requires DevOps → YES
 
-Update state → IMPLEMENTATION
+Update state:
+
+* Current Stage → IMPLEMENTATION
+* Last Completed Stage → ARCHITECTURE
 
 ---
 
-## STAGE: IMPLEMENTATION
+### STAGE: IMPLEMENTATION
 
 Act as Builder.
 
-## STRICT TDD
+STRICT TDD:
 
 1. Write failing tests
-2. Show failure
+2. Show expected failure
 3. Implement minimal code
-4. Refactor
+4. Refactor safely
+
+Security requirements:
+
+* validate all inputs
+* enforce auth where relevant
+* avoid data leakage
+* prevent injection risks
+* do not hardcode secrets
+* use safe external call patterns
 
 Save to:
 `/ai/runtime/builder.md`
 
----
+If failing tests are not shown first:
+STOP.
 
-## TDD VALIDATION
-
-If failing tests are NOT shown first:
+If implementation is not minimal:
 STOP.
 
 If tests do not pass after implementation:
 STOP.
 
+Update state:
+
+* Current Stage → VERIFICATION
+* Last Completed Stage → IMPLEMENTATION
+
 ---
 
-Update state → VERIFICATION
+### STAGE: VERIFICATION
 
----
-
-## STAGE: VERIFICATION
-
-Act as Tester.
+Act as Verifier.
 
 Check:
 
 * unit tests
 * integration tests
-* regression coverage
+* regression tests
+* auth and permission coverage
+* invalid input coverage
+* security regression gaps
 
 Save to:
 `/ai/runtime/verifier.md`
 
-If gaps found:
+If critical gaps found:
 STOP.
 
-Update state → DEVOPS_REVIEW
+Update state:
+
+* Current Stage → DEVOPS_REVIEW
+* Last Completed Stage → VERIFICATION
 
 ---
 
-## STAGE: DEVOPS_REVIEW
+### STAGE: DEVOPS_REVIEW
 
-Act as DevOps Engineer.
+Act as DevOps.
 
 Check:
 
-* Docker stability
-* health checks
+* Docker/runtime safety
+* healthchecks
 * restart policies
+* graceful shutdown
 * resource limits
-* circuit breakers
-* retries/timeouts
+* retries and timeouts
+* circuit breakers where required
+* deployment and rollback safety
+* reverse proxy safety if applicable
 
 Save to:
 `/ai/runtime/devops.md`
@@ -154,11 +189,14 @@ Save to:
 If unsafe:
 STOP.
 
-Update state → CRITICAL_REVIEW
+Update state:
+
+* Current Stage → CRITICAL_REVIEW
+* Last Completed Stage → DEVOPS_REVIEW
 
 ---
 
-## STAGE: CRITICAL_REVIEW
+### STAGE: CRITICAL_REVIEW
 
 Act as Critic.
 
@@ -166,39 +204,54 @@ Challenge:
 
 * hidden bugs
 * bad assumptions
-* missing tests
+* weak tests
+* security gaps
+* production risks
 * simpler alternatives
 
 Save to:
 `/ai/runtime/critic.md`
 
-Update state → COMPLETE
+If critical flaw found:
+STOP.
+
+Update state:
+
+* Current Stage → COMPLETE
+* Last Completed Stage → CRITICAL_REVIEW
 
 ---
 
-## STAGE: COMPLETE
+### STAGE: COMPLETE
 
-Summarise outcome.
+Summarise:
+
+* what was built
+* risks
+* security concerns
+* follow-up improvements
 
 Save to:
 `/ai/runtime/final.md`
 
 ---
 
-# STEP 4 — LOOP CONTROL
+## STEP 4 — LOOP CONTROL
 
 If Mode = AUTO and Continue = YES:
 Proceed to next stage automatically.
 
 If Mode = STEP:
-STOP.
+STOP after current stage.
 
 ---
 
-# RULES
+## RULES
 
 * Do not skip stages
+* Do not merge stages
 * Do not write code outside IMPLEMENTATION
 * Do not proceed if tests fail
+* Do not proceed if security requirements are unclear
 * Always update MASTER_STATE.md
 * Always persist outputs
