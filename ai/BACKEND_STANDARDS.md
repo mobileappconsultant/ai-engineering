@@ -1,82 +1,143 @@
 # BACKEND_STANDARDS
 
-Backend code must be production-safe.
+Backend code must be production-safe, secure, observable, and resilient.
+
+---
 
 ## Architecture
+
 Use:
-- API/controller layer
-- service layer
-- repository/data access layer
-- infrastructure adapters
+
+* API/controller layer
+* service layer
+* repository/data access layer
+* infrastructure adapters
 
 Do not put business logic in route handlers.
 
-## Dependency Injection
-Use DI for:
-- repositories
-- service classes
-- external clients
-- config providers
-- caches
-- message brokers
+---
 
-Prefer explicit injection over hidden singletons.
+## FastAPI Rules
+
+* Use Pydantic models for all request and response contracts
+* Use dependency injection for auth, config, repositories, and clients
+* Keep route handlers thin
+* Centralise exception handling
+* Validate and sanitise request inputs
+* Return safe error responses only
+
+---
+
+## Dependency Injection
+
+Use DI for:
+
+* repositories
+* service classes
+* external clients
+* config providers
+* caches
+* message brokers
+* policy engines
+
+Prefer explicit injection over hidden globals or implicit singletons.
+
+---
+
+## Authentication and Authorisation
+
+* Enforce auth in backend dependencies
+* Enforce RBAC at route or service layer
+* Test permission boundaries explicitly
+* Never rely on frontend enforcement
+
+---
 
 ## Circuit Breakers
+
 Required when calling:
-- third-party APIs
-- rate-limited APIs
-- flaky internal services
-- slow network dependencies
 
-Must support:
-- closed / open / half-open states
-- failure threshold
-- reset timeout
-- fallback behavior
-- structured logging
+* third-party APIs
+* rate-limited APIs
+* flaky internal services
+* slow network dependencies
+* AI, OCR, geocoding, or enrichment providers
 
-## Retries
+Must define:
+
+* failure threshold
+* reset timeout
+* fallback behaviour
+* logging behaviour
+
+---
+
+## Retries and Timeouts
+
 Retries must be:
-- bounded
-- backoff-based
-- idempotent-aware
+
+* bounded
+* backoff-based
+* idempotent-aware
+
+External calls must have:
+
+* connect timeout
+* read timeout
+* total timeout where practical
 
 Do not retry blindly.
 
-## Healthchecks
-Backend services should expose:
-- liveness
-- readiness
-- dependency health where appropriate
+---
 
-## Queue Safety
+## Queue and Worker Safety
+
 For async workers:
-- ack policy must be explicit
-- task time limits required
-- prefetch tuned
-- retries bounded
-- poison message strategy defined
+
+* task time limits required
+* retries bounded
+* poison-message behaviour defined
+* concurrency chosen based on memory reality
+* prefetch tuned deliberately
+* late ack only when appropriate
+
+---
+
+## Healthchecks
+
+Backend services should expose:
+
+* liveness
+* readiness
+* dependency health where appropriate
+
+Health endpoints must not claim healthy if critical dependencies are unavailable.
+
+---
 
 ## Data Safety
-- migrations must be reversible where possible
-- destructive migrations require explicit approval
-- schema changes must consider zero-downtime rollout
+
+* Migrations must be reversible where possible
+* Destructive migrations require explicit approval
+* Schema changes must consider zero-downtime rollout
+* Use parameterised queries only
+
+---
 
 ## Observability
-- structured logs
-- correlation IDs where relevant
-- actionable error messages
-- metrics where feasible
 
-## Circuit Breaker Requirement
-Mandatory when:
-- calling external APIs
-- handling OCR / NLP / AI calls
-- using queues or async workers
+* structured logs
+* actionable errors
+* correlation IDs where relevant
+* clear startup failure messages
+* dependency failure visibility
 
-Must define:
-- failure threshold
-- retry strategy
-- timeout
-- fallback
+---
+
+## Security Expectations
+
+* strict schema validation
+* no hardcoded secrets
+* no sensitive data leakage
+* auth bypass tests mandatory for protected routes
+* file uploads validated and constrained
