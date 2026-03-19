@@ -1,37 +1,38 @@
 You are bootstrapping and initialising the AI engineering system.
 
-This step prepares the environment AND loads system context.
+## STEP 1 — VALIDATE STRUCTURE
 
----
-
-# STEP 1 — VALIDATE STRUCTURE
-
-Ensure the following directories exist:
+Ensure directories exist:
 
 * /ai
 * /ai/docs
 * /ai/runtime
 
-If missing:
-Create them.
+Create missing directories.
 
 ---
 
-# STEP 2 — VALIDATE CORE FILES
+## STEP 2 — VALIDATE CORE FILES
 
-Ensure the following files exist:
+Ensure files exist:
 
 * /ai/master.md
 * /ai/MASTER_STATE.md
+* /ai/AI_SYSTEM.md
+* /ai/ENGINEERING_STANDARDS.md
+* /ai/CHANGE_CONTROL.md
+* /ai/TEST_STRATEGY.md
+* /ai/DESIGN_PATTERNS.md
+* /ai/SECURITY_STANDARDS.md
 
 If missing:
-Create default versions with valid structure.
+create or restore sensible defaults.
 
 ---
 
-# STEP 3 — LOAD GOVERNANCE LAYER (MANDATORY)
+## STEP 3 — LOAD GOVERNANCE LAYER
 
-Read and internalise ALL of the following:
+Read and internalise:
 
 * /ai/AI_SYSTEM.md
 * /ai/PROJECT_TYPE.md
@@ -42,12 +43,13 @@ Read and internalise ALL of the following:
 * /ai/CHANGE_CONTROL.md
 * /ai/TEST_STRATEGY.md
 * /ai/DESIGN_PATTERNS.md
-* project-type-specific standards (if defined)
-* /ai/docs/* (if exists)
+* /ai/SECURITY_STANDARDS.md
+* project-type-specific standards
+* /ai/docs/*
 
 ---
 
-# STEP 4 — VALIDATE SYSTEM STATE
+## STEP 4 — VALIDATE SYSTEM STATE
 
 Extract from MASTER_STATE.md:
 
@@ -57,23 +59,23 @@ Extract from MASTER_STATE.md:
 
 Ensure:
 
-* current stage is valid
+* current stage valid
 * mode is AUTO or STEP
 * continue flag exists
 
 If invalid:
-Repair before proceeding.
+repair before proceeding.
 
 ---
 
-# STEP 5 — GENERATE DOCUMENTATION
+## STEP 5 — GENERATE DOCS
 
-If Python is available:
+If Python available:
 
 Run:
 python ai/generate_docs.py
 
-Ensure the following files exist:
+Ensure generated:
 
 * /ai/docs/SYSTEM_ARCHITECTURE.md
 * /ai/docs/API_MAP.md
@@ -81,55 +83,27 @@ Ensure the following files exist:
 * /ai/docs/MODULE_GRAPH.md
 
 If generation fails:
-STOP and report error.
+STOP and report.
 
 ---
 
-# STEP 6 — SYSTEM SUMMARY OUTPUT
+## STEP 6 — OUTPUT SYSTEM SUMMARY
 
-Output the following:
+Output:
 
 1. Current Stage
 2. Current Project Type
-3. Active Constraints (from master.md + standards)
-4. Next Required Agent (based on stage)
-5. Summary of System Architecture (from docs)
+3. Active Constraints
+4. Next Required Agent
+5. Summary of System Architecture
+6. Security Readiness Notes
 
 ---
 
-# STEP 7 — FINAL VALIDATION
-
-Confirm:
-
-* required directories exist
-* required files exist
-* system state is valid
-* documentation is present
-
----
-
-# RULES
+## RULES
 
 * Do not write code
-* Do not skip validation steps
-* Do not assume missing files
+* Do not skip validation
 * Prefer stopping over guessing
-
----
-
-# OUTPUT FORMAT
-
-## System Initialisation Report
-
-* Structure Status
-* Core Files Status
-* Documentation Status
-* Current Stage
-* Project Type
-* Next Agent
-* Constraints Summary
-* Architecture Summary
-
----
 
 STOP after output.
